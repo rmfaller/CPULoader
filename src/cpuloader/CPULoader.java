@@ -39,9 +39,10 @@ public class CPULoader extends Thread {
             }
         }
         if (threads > 0) {
-            System.out.println("CPULoader running " + threads + " threads for " + lapsedtime + "ms");
-
+            System.out.println("CPULoader running " + threads + " threads for " + lapsedtime + "ms. ");
+            Spinner spinner = new Spinner(128);
             Loaders[] loaders = new Loaders[(int) threads];
+            spinner.start();
             for (int i = 0; i < threads; i++) {
                 loaders[i] = new Loaders(i, lapsedtime);
                 loaders[i].start();
@@ -49,7 +50,8 @@ public class CPULoader extends Thread {
             for (int i = 0; i < threads; i++) {
                 loaders[i].join();
             }
-            System.out.println(" completed.");
+            spinner.continueToRun = false;
+            System.out.println(". Stopped and completed.");
         }
     }
 

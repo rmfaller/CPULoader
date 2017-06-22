@@ -28,16 +28,21 @@ class Loaders extends Thread {
     public void run() {
         long optime = 0;
         long startop = (long) new Date().getTime();
-        while (optime <= lapsedtime) {
-            for (int i = 0; i < lapsedtime; i++) {
-                Math.atan(Math.sqrt(Math.pow(32768, 32768)));
-                double d = tan(atan(tan(atan(tan(atan(tan(atan(tan(atan(123456789.123456789))))))))));
-            }
+        while ((optime <= lapsedtime) || (lapsedtime == 0)) {
+            Math.atan(Math.sqrt(Math.pow(32768, 32768)));
+            double d = tan(atan(tan(atan(tan(atan(tan(atan(tan(atan(123456789.123456789))))))))));
+            fibber(16);
             long endop = (long) new Date().getTime();
             optime = (endop - startop);
-            System.out.print(".");
         }
         yield();
     }
 
+    public static long fibber(int n) {
+        if (n <= 1) {
+            return n;
+        } else {
+            return fibber(n - 1) + fibber(n - 2);
+        }
+    }
 }
