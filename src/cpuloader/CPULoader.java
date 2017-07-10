@@ -13,6 +13,7 @@ public class CPULoader extends Thread {
 
     private static long lapsedtime = 5000;
     private static long threads = 1;
+    private static int threshold = 0;
 
     /**
      * @param args the command line arguments
@@ -29,6 +30,10 @@ public class CPULoader extends Thread {
                 case "--lapsedtime":
                     lapsedtime = Long.parseLong(args[i + 1]);
                     break;
+                case "-s":
+                case "--threshold":
+                    threshold = Integer.parseInt(args[i + 1]);
+                    break;
                 case "-h":
                 case "--help":
                     help();
@@ -39,16 +44,40 @@ public class CPULoader extends Thread {
             }
         }
         if (threads > 0) {
-            System.out.println("CPULoader running " + threads + " threads for " + lapsedtime + "ms. ");
             Spinner spinner = new Spinner(128);
-            Loaders[] loaders = new Loaders[(int) threads];
-            spinner.start();
-            for (int i = 0; i < threads; i++) {
-                loaders[i] = new Loaders(i, lapsedtime);
-                loaders[i].start();
-            }
-            for (int i = 0; i < threads; i++) {
-                loaders[i].join();
+            if (threshold == 0) {
+                System.out.println("CPULoader running " + threads + " threads for " + lapsedtime + "ms with threshold = " + threshold);
+                Loaders[] loaders = new Loaders[(int) threads];
+                spinner.start();
+                for (int i = 0; i < threads; i++) {
+                    loaders[i] = new Loaders(i, lapsedtime, threshold);
+                    loaders[i].start();
+                }
+                for (int i = 0; i < threads; i++) {
+                    loaders[i].join();
+                }
+            } else {
+                long threadcnt = threads;
+                long tasktime = 0;
+                System.out.println("CPULoader starting with " + threadcnt + " thread(s) not to exceed " + lapsedtime + "ms run time with threshold = " + threshold + "ms");
+                while (threshold >= (tasktime / (float) threadcnt)) {
+                    Loaders[] loaders = new Loaders[(int) threadcnt];
+                    for (int i = 0; i < threadcnt; i++) {
+                        loaders[i] = new Loaders(i, lapsedtime, threshold);
+                        loaders[i].start();
+                    }
+                    tasktime = 0;
+                    for (int i = 0; i < threadcnt; i++) {
+                        loaders[i].join();
+                        tasktime = loaders[i].getTaskTime() + tasktime;
+                    }
+                    System.out.print("Thread count = ");
+                    System.out.format("%4d", threadcnt);
+                    System.out.print(" with average time to run = ");
+                    System.out.format("%8.2f",(tasktime / (float) threadcnt));
+                    System.out.println("ms");
+                    threadcnt++;
+                }
             }
             spinner.continueToRun = false;
             System.out.println(". Stopped and completed.");
@@ -61,6 +90,7 @@ public class CPULoader extends Thread {
                 + "\navailable options:"
                 + "\n\t--lapsedtime | -l {default = 5000} time, in milliseconds the load should run"
                 + "\n\t--threads    | -t {default = 1} numbers of threads to spawn"
+                + "\n\t--threshold  | -s {default = 0} ms a thread must complete by; once exceeded stop; 0 = no threshold"
                 + "\n\t--help       | -h this output\n"
                 + "\nExample: java -jar ./dist/CPULoader.jar --lapsedtime 20000 --threads 2\n";
         System.out.println(help);
