@@ -56,10 +56,12 @@ public class CPULoader extends Thread {
                 for (int i = 0; i < threads; i++) {
                     loaders[i].join();
                 }
+                spinner.continueToRun = false;
+                System.out.println(". Stopped and completed.");
             } else {
                 long threadcnt = threads;
                 long tasktime = 0;
-                System.out.println("CPULoader starting with " + threadcnt + " thread(s) not to exceed " + lapsedtime + "ms run time with threshold = " + threshold + "ms");
+                System.out.println("CPULoader starting with " + threadcnt + " thread(s) not to exceed " + lapsedtime + "ms total loop time per thread");
                 while (threshold >= (tasktime / (float) threadcnt)) {
                     Loaders[] loaders = new Loaders[(int) threadcnt];
                     for (int i = 0; i < threadcnt; i++) {
@@ -67,20 +69,22 @@ public class CPULoader extends Thread {
                         loaders[i].start();
                     }
                     tasktime = 0;
+                    int exceed = 0;
                     for (int i = 0; i < threadcnt; i++) {
                         loaders[i].join();
                         tasktime = loaders[i].getTaskTime() + tasktime;
+                        if (loaders[i].getTaskTime() > threshold) {
+                            exceed++;
+                        }
                     }
                     System.out.print("Thread count = ");
                     System.out.format("%4d", threadcnt);
                     System.out.print(" with average time to run = ");
-                    System.out.format("%8.2f",(tasktime / (float) threadcnt));
-                    System.out.println("ms");
+                    System.out.format("%8.2f", (tasktime / (float) threadcnt));
+                    System.out.println("ms and " + exceed + " exceeded the " + threshold + "ms threshold");
                     threadcnt++;
                 }
             }
-            spinner.continueToRun = false;
-            System.out.println(". Stopped and completed.");
         }
     }
 
