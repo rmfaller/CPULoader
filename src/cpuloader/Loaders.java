@@ -36,6 +36,7 @@ class Loaders extends Thread {
         long endtask = 0;
         while (((optime <= lapsedtime) || (lapsedtime == 0)) && ((endtask <= this.threshold) || (threshold == 0))) {
             starttask = (long) new Date().getTime();
+            fibber(20);
             Math.atan(Math.sqrt(Math.pow(32768, 32768)));
             double d = tan(atan(tan(atan(tan(atan(tan(atan(tan(atan(123456789.123456789))))))))));
             fibber(16);

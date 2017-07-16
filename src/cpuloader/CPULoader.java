@@ -61,7 +61,7 @@ public class CPULoader extends Thread {
             } else {
                 long threadcnt = threads;
                 long tasktime = 0;
-                System.out.println("CPULoader starting with " + threadcnt + " thread(s) not to exceed " + lapsedtime + "ms total loop time per thread");
+                System.out.println("CPULoader starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                 while (threshold >= (tasktime / (float) threadcnt)) {
                     Loaders[] loaders = new Loaders[(int) threadcnt];
                     for (int i = 0; i < threadcnt; i++) {
@@ -80,7 +80,7 @@ public class CPULoader extends Thread {
                     System.out.print("Thread count = ");
                     System.out.format("%4d", threadcnt);
                     System.out.print(" with average time to run = ");
-                    System.out.format("%8.2f", (tasktime / (float) threadcnt));
+                    System.out.format("%5.2f", (float)(tasktime / (float) threadcnt));
                     System.out.println("ms and " + exceed + " exceeded the " + threshold + "ms threshold");
                     threadcnt++;
                 }
