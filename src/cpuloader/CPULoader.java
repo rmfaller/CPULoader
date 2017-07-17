@@ -11,7 +11,7 @@ package cpuloader;
  */
 public class CPULoader extends Thread {
 
-    private static long lapsedtime = 5000;
+    private static long lapsedtime = 500;
     private static long threads = 1;
     private static int threshold = 0;
 
@@ -32,7 +32,11 @@ public class CPULoader extends Thread {
                     break;
                 case "-s":
                 case "--threshold":
-                    threshold = Integer.parseInt(args[i + 1]);
+                    if ((i + 1) < args.length) {
+                        threshold = Integer.parseInt(args[i + 1]);
+                    } else {
+                        threshold = 5;
+                    }
                     break;
                 case "-h":
                 case "--help":
@@ -80,7 +84,7 @@ public class CPULoader extends Thread {
                     System.out.print("Thread count = ");
                     System.out.format("%4d", threadcnt);
                     System.out.print(" with average time to run = ");
-                    System.out.format("%5.2f", (float)(tasktime / (float) threadcnt));
+                    System.out.format("%5.2f", (float) (tasktime / (float) threadcnt));
                     System.out.println("ms and " + exceed + " exceeded the " + threshold + "ms threshold");
                     threadcnt++;
                 }
@@ -92,9 +96,9 @@ public class CPULoader extends Thread {
         String help = "\nCPULoader usage:"
                 + "\njava -jar ./dist/CPULoader.jar"
                 + "\navailable options:"
-                + "\n\t--lapsedtime | -l {default = 5000} time, in milliseconds the load should run"
-                + "\n\t--threads    | -t {default = 1} numbers of threads to spawn"
-                + "\n\t--threshold  | -s {default = 0} ms a thread must complete by; once exceeded stop; 0 = no threshold"
+                + "\n\t--lapsedtime | -l {default = " + lapsedtime + "} time, in milliseconds the load should run"
+                + "\n\t--threads    | -t {default = " + threads + "} numbers of threads to spawn"
+                + "\n\t--threshold  | -s {default = " + threshold + "} ms a thread must complete by; once exceeded stop; 0 = no threshold"
                 + "\n\t--help       | -h this output\n"
                 + "\nExample: java -jar ./dist/CPULoader.jar --lapsedtime 20000 --threads 2\n";
         System.out.println(help);
