@@ -14,6 +14,7 @@ public class CPULoader extends Thread {
     private static long lapsedtime = 500;
     private static long threads = 1;
     private static int threshold = 0;
+    private static int defaultthreshold = 5;
 
     /**
      * @param args the command line arguments
@@ -35,7 +36,7 @@ public class CPULoader extends Thread {
                     if ((i + 1) < args.length) {
                         threshold = Integer.parseInt(args[i + 1]);
                     } else {
-                        threshold = 5;
+                        threshold = defaultthreshold;
                     }
                     break;
                 case "-h":
@@ -98,7 +99,7 @@ public class CPULoader extends Thread {
                 + "\navailable options:"
                 + "\n\t--lapsedtime | -l {default = " + lapsedtime + "} time, in milliseconds the load should run"
                 + "\n\t--threads    | -t {default = " + threads + "} numbers of threads to spawn"
-                + "\n\t--threshold  | -s {default = " + threshold + "} ms a thread must complete by; once exceeded stop; 0 = no threshold"
+                + "\n\t--threshold  | -s {default = " + defaultthreshold + "} milliseconds a thread must complete by; once exceeded stop the thread"
                 + "\n\t--help       | -h this output\n"
                 + "\nExample: java -jar ./dist/CPULoader.jar --lapsedtime 20000 --threads 2\n";
         System.out.println(help);
