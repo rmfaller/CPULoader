@@ -10,6 +10,8 @@ available options:
 
 `--threshold  | -s {default = 5} milliseconds a thread must complete by; once exceeded stop the thread`
 
+`--csv        | -c {default = non-csv output} outputs in comma-delimited format when using --threshold`
+
 `--help       | -h this output`
 
 
