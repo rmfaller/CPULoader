@@ -54,9 +54,10 @@ public class CPULoader extends Thread {
             }
         }
         if (threads > 0) {
+            int cores = Runtime.getRuntime().availableProcessors();
             Spinner spinner = new Spinner(128);
             if (threshold == 0) {
-                System.out.println("CPULoader running " + threads + " threads for " + lapsedtime + "ms with threshold = " + threshold);
+                System.out.println("CPULoader found " + cores + " cores and running " + threads + " threads for " + lapsedtime + "ms with threshold = " + threshold);
                 Loaders[] loaders = new Loaders[(int) threads];
                 spinner.start();
                 for (int i = 0; i < threads; i++) {
@@ -71,7 +72,7 @@ public class CPULoader extends Thread {
             } else {
                 long threadcnt = threads;
                 long tasktime = 0;
-                System.out.println("CPULoader starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
+                System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                 if (csv) {
                     System.out.println("threads,avr-time,passed,exceeded,threshold,");
                 }
