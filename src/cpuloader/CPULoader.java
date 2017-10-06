@@ -72,9 +72,11 @@ public class CPULoader extends Thread {
             } else {
                 long threadcnt = threads;
                 long tasktime = 0;
-                System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
+//                System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                 if (csv) {
                     System.out.println("threads,avr-time,passed,exceeded,threshold,");
+                } else {
+                    System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                 }
                 while (threshold >= (tasktime / (float) threadcnt)) {
                     Loaders[] loaders = new Loaders[(int) threadcnt];
