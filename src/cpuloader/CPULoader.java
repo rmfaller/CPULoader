@@ -16,7 +16,7 @@ public class CPULoader extends Thread {
     private static long lapsedtime = 500;
     private static long threads = 1;
     private static int threshold = 0;
-    private static int defaultthreshold = 5;
+    private static final int defaultthreshold = 5;
     private static boolean csv = false;
     private static boolean forever = false;
 
@@ -64,6 +64,9 @@ public class CPULoader extends Thread {
             int cores = Runtime.getRuntime().availableProcessors();
             Spinner spinner = new Spinner(128);
             if (threshold == 0) {
+                if (forever) {
+                    lapsedtime = 0;
+                }
                 System.out.println("CPULoader found " + cores + " cores and running " + threads + " threads for " + lapsedtime + "ms with threshold = " + threshold);
                 Loaders[] loaders = new Loaders[(int) threads];
                 spinner.start();
@@ -134,13 +137,19 @@ public class CPULoader extends Thread {
         String help = "\nCPULoader usage:"
                 + "\njava -jar ./dist/CPULoader.jar"
                 + "\navailable options:"
-                + "\n\t--lapsedtime | -l {default = " + lapsedtime + "} time, in milliseconds the load should run - OR - how many iterations a thread should make when used with --forever"
+                + "\n\t--lapsedtime | -l {default = " + lapsedtime + "} time, in milliseconds the load should run - OR - how long an individual thread should run when threshold is set to 0"
                 + "\n\t--threads    | -t {default = " + threads + "} maximum number of threads to spawn"
-                + "\n\t--threshold  | -s {default = " + defaultthreshold + "} milliseconds a thread must complete by; once exceeded stop the thread"
+                + "\n\t--threshold  | -s {default = " + threshold + "} milliseconds a thread must complete by; once exceeded stop the thread"
                 + "\n\t--csv        | -c {default = non-csv output} outputs in comma-delimited format"
-                + "\n\t--forever    | -f {default is to NOT run forever}"
+                + "\n\t--forever    | -f {default = " + forever + " i.e. do  NOT run forever} include this switch to set forever to true"
                 + "\n\t--help       | -h this output\n"
-                + "\nExample: java -jar ./dist/CPULoader.jar --lapsedtime 20000 --threads 2\n";
+                + "\nExamples:"
+                + "\n\nRun 2 threads of load until stopped:"
+                + "\njava -jar ./dist/CPULoader.jar --lapsedtime 20000 --threads 2"
+                + "\n\nIncrement thread count until threshold is exceeded:"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 5"
+                + "\n\nIncrement thread count until threshold is exceeded and start again until stopped with output in csv format:"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 5 --forever --csv\n";
         System.out.println(help);
     }
 }
