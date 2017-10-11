@@ -15,6 +15,8 @@ public class CPULoader extends Thread {
 
     private static long lapsedtime = 500;
     private static long threads = 1;
+    private static long minthreads = 1;
+    private static long maxthreads = 1;
     private static int threshold = 0;
     private static final int defaultthreshold = 5;
     private static boolean csv = false;
@@ -27,9 +29,17 @@ public class CPULoader extends Thread {
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
-                case "-t":
+/*                case "-t":
                 case "--threads":
                     threads = Long.parseLong(args[i + 1]);
+                    break; */
+                case "-m":
+                case "--minthreads":
+                    minthreads = Long.parseLong(args[i + 1]);
+                    break;
+                case "-x":
+                case "--maxthreads":
+                    maxthreads = Long.parseLong(args[i + 1]);
                     break;
                 case "-l":
                 case "--lapsedtime":
@@ -60,6 +70,9 @@ public class CPULoader extends Thread {
                     break;
             }
         }
+        if (minthreads > maxthreads) {
+            maxthreads = minthreads + 1;
+        }
         if (threads > 0) {
             int cores = Runtime.getRuntime().availableProcessors();
             Spinner spinner = new Spinner(128);
@@ -67,6 +80,7 @@ public class CPULoader extends Thread {
                 if (forever) {
                     lapsedtime = 0;
                 }
+                threads = maxthreads;
                 System.out.println("CPULoader found " + cores + " cores and running " + threads + " threads for " + lapsedtime + "ms with threshold = " + threshold);
                 Loaders[] loaders = new Loaders[(int) threads];
                 spinner.start();
@@ -82,9 +96,8 @@ public class CPULoader extends Thread {
             } else {
                 int loops = 0;
                 while (loops <= 1) {
-                    long threadcnt = threads;
+                    long threadcnt = minthreads;
                     long tasktime = 0;
-//                System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                     if (!csv) {
                         System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                     } else {
@@ -92,7 +105,7 @@ public class CPULoader extends Thread {
                             System.out.println("timestamp,threads,avr-time,passed,exceeded,threshold,");
                         }
                     }
-                    while (threshold >= (tasktime / (float) threadcnt)) {
+                    while ((threshold >= (tasktime / (float) threadcnt)) && (threadcnt <= maxthreads)) {
                         Loaders[] loaders = new Loaders[(int) threadcnt];
                         for (int i = 0; i < threadcnt; i++) {
                             loaders[i] = new Loaders(i, lapsedtime, threshold);
@@ -125,7 +138,7 @@ public class CPULoader extends Thread {
                         loops = 2;
                     } else {
                         loops = 1;
-                        threadcnt = threads;
+                        threadcnt = minthreads;
                         tasktime = 0;
                     }
                 }
@@ -138,7 +151,9 @@ public class CPULoader extends Thread {
                 + "\njava -jar ./dist/CPULoader.jar"
                 + "\navailable options:"
                 + "\n\t--lapsedtime | -l {default = " + lapsedtime + "} time, in milliseconds the load should run - OR - how long an individual thread should run when threshold is set to 0"
-                + "\n\t--threads    | -t {default = " + threads + "} maximum number of threads to spawn"
+//                + "\n\t--threads    | -t {default = " + threads + "} maximum number of threads to spawn"
+                + "\n\t--minthreads | -m {default = " + threads + "} maximum number of threads to spawn"
+                + "\n\t--maxthreads | -x {default = " + threads + "} maximum number of threads to spawn"
                 + "\n\t--threshold  | -s {default = " + threshold + "} milliseconds a thread must complete by; once exceeded stop the thread"
                 + "\n\t--csv        | -c {default = non-csv output} outputs in comma-delimited format"
                 + "\n\t--forever    | -f {default = " + forever + " i.e. do  NOT run forever} include this switch to set forever to true"
