@@ -6,7 +6,9 @@ available options:
 
 	--lapsedtime | -l {default = 500} time, in milliseconds the load should run - OR - how long an individual thread should run when threshold is set to 0
 
-	--threads    | -t {default = 1} maximum number of threads to spawn
+	--minthreads | -m {default = 1} minimum number of threads to spawn
+
+	--maxthreads | -x {default = 1} maximum number of threads to spawn
 
 	--threshold  | -s {default = 0} milliseconds a thread must complete by; once exceeded stop the thread
 
@@ -20,7 +22,7 @@ Examples:
 
 Run 2 threads of load until stopped:
 
-**java -jar ./dist/CPULoader.jar --lapsedtime 20000 --threads 2**
+**java -jar ./dist/CPULoader.jar --lapsedtime 20000 --maxthreads 2**
 
 Increment thread count until threshold is exceeded:
 
