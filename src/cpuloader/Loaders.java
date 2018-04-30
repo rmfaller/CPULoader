@@ -39,6 +39,7 @@ class Loaders extends Thread {
             fibber(16);
             Math.atan(Math.sqrt(Math.pow(32768, 32768)));
             double d = tan(atan(tan(atan(tan(atan(tan(atan(tan(atan(123456789.123456789))))))))));
+            sleeper((double) 0.8, (long) 32);
             fibber(16);
             long endop = (long) new Date().getTime();
             if (this.threshold != 0) {
@@ -63,6 +64,21 @@ class Loaders extends Thread {
             return n;
         } else {
             return fibber(n - 1) + fibber(n - 2);
+        }
+    }
+
+    private void sleeper(double load, long duration) {
+        long startTime = System.currentTimeMillis();
+        try {
+            // Loop for the given duration
+            while (System.currentTimeMillis() - startTime < duration) {
+                // Every 100ms, sleep for the percentage of unladen time
+                if (System.currentTimeMillis() % 100 == 0) {
+                    Thread.sleep((long) Math.floor((1 - load) * 100));
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

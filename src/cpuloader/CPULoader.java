@@ -19,6 +19,7 @@ public class CPULoader extends Thread {
     private static long maxthreads = 1;
     private static int threshold = 0;
     private static final int defaultthreshold = 5;
+    private static boolean baseline = false;
     private static boolean csv = false;
     private static boolean forever = false;
 
@@ -29,7 +30,7 @@ public class CPULoader extends Thread {
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
-/*                case "-t":
+                /*                case "-t":
                 case "--threads":
                     threads = Long.parseLong(args[i + 1]);
                     break; */
@@ -52,6 +53,10 @@ public class CPULoader extends Thread {
                     } else {
                         threshold = defaultthreshold;
                     }
+                    break;
+                case "-b":
+                case "--baseline":
+                    baseline = true;
                     break;
                 case "-c":
                 case "--csv":
@@ -98,11 +103,16 @@ public class CPULoader extends Thread {
                 while (loops <= 1) {
                     long threadcnt = minthreads;
                     long tasktime = 0;
-                    if (!csv) {
+                    if ((!csv) && (!baseline)) {
                         System.out.println("CPULoader found " + cores + " cores and starting with " + threadcnt + " thread(s) and not to exceed " + lapsedtime + "ms total loop time per thread");
                     } else {
                         if (loops == 0) {
-                            System.out.println("timestamp,threads,avr-time,passed,exceeded,threshold,");
+                            if (csv) {
+                                System.out.println("timestamp,threads,avr-time,passed,exceeded,threshold,");
+                            }
+                            if (baseline) {
+                                System.out.println("timestamp,threads,avr-time,threshold,");
+                            }
                         }
                     }
                     while ((threshold >= (tasktime / (float) threadcnt)) && (threadcnt <= maxthreads)) {
@@ -125,14 +135,23 @@ public class CPULoader extends Thread {
                         }
                         if (csv) {
                             System.out.println((long) new Date().getTime() + "," + threadcnt + "," + (float) (tasktime / (float) threadcnt) + "," + passed + "," + exceed + "," + threshold);
-                        } else {
+                        }
+                        if ((!csv) && (!baseline)) {
                             System.out.print("Thread count = ");
                             System.out.format("%4d", threadcnt);
                             System.out.print(" with average time to run = ");
                             System.out.format("%5.2f", (float) (tasktime / (float) threadcnt));
                             System.out.println("ms and " + exceed + " exceeded the " + threshold + "ms threshold");
+
                         }
                         threadcnt++;
+                    }
+                    if (baseline) {
+                        if (threadcnt > maxthreads) {
+                            System.out.println("Baseline not found; increment maxthreads (was " + maxthreads + ") or lower the threshold (was " + threshold + ")");
+                        } else {
+                            System.out.println((long) new Date().getTime() + "," + threadcnt + "," + (float) (tasktime / (float) threadcnt) + "," + threshold);
+                        }
                     }
                     if (!forever) {
                         loops = 2;
@@ -151,7 +170,7 @@ public class CPULoader extends Thread {
                 + "\njava -jar ./dist/CPULoader.jar"
                 + "\navailable options:"
                 + "\n\t--lapsedtime | -l {default = " + lapsedtime + "} time, in milliseconds the load should run - OR - how long an individual thread should run when threshold is set to 0"
-//                + "\n\t--threads    | -t {default = " + threads + "} maximum number of threads to spawn"
+                //                + "\n\t--threads    | -t {default = " + threads + "} maximum number of threads to spawn"
                 + "\n\t--minthreads | -m {default = " + threads + "} minimum number of threads to spawn"
                 + "\n\t--maxthreads | -x {default = " + threads + "} maximum number of threads to spawn"
                 + "\n\t--threshold  | -s {default = " + threshold + "} milliseconds a thread must complete by; once exceeded stop the thread"
@@ -163,8 +182,12 @@ public class CPULoader extends Thread {
                 + "\njava -jar ./dist/CPULoader.jar --lapsedtime 20000 --maxthreads 2"
                 + "\n\nIncrement thread count until threshold is exceeded:"
                 + "\njava -jar ./dist/CPULoader.jar --threshold 5"
+                + "\n\nFind threshold sweet spot - set maxthreads to known cores and increment threshold until 0% - 10% threads exceed threshold:"
+                + "\njava -jar ./dist/CPULoader.jar  --maxthreads 8 --forever --threshold 38"
+                + "\n\nFind CPU consistency - set maxthreads to 2x - 3x known cores and threshold to \"sweet spot\":"
+                + "\njava -jar ./dist/CPULoader.jar  --maxthreads 22 --forever --threshold 38 --baseline"
                 + "\n\nIncrement thread count until threshold is exceeded and start again until stopped with output in csv format:"
-                + "\njava -jar ./dist/CPULoader.jar --threshold 5 --forever --csv\n";
+                + "\njava -jar ./dist/CPULoader.jar --threshold 36 --forever --csv --maxhtreads 32 \n";
         System.out.println(help);
     }
 }
