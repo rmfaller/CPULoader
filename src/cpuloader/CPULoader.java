@@ -176,6 +176,7 @@ public class CPULoader extends Thread {
                 + "\n\t--threshold  | -s {default = " + threshold + "} milliseconds a thread must complete by; once exceeded stop the thread"
                 + "\n\t--csv        | -c {default = non-csv output} outputs in comma-delimited format"
                 + "\n\t--forever    | -f {default = " + forever + " i.e. do  NOT run forever} include this switch to set forever to true"
+                + "\n\t--baseline   | -b {default = " + baseline + "} repeat test while incrementing threads until response time exceeds threshold"
                 + "\n\t--help       | -h this output\n"
                 + "\nExamples:"
                 + "\n\nRun 2 threads of load until stopped:"
