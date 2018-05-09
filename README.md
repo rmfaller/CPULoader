@@ -34,7 +34,7 @@ java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever
 Find CPU consistency - set maxthreads to 2x - 3x known cores and threshold to "sweet spot" as discovered using the previous example:
 java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever --baseline
 
-Increment thread count until threshold or maxthreads is exceeded and start again until stopped with output in csv format (handy for graphing):
+Increment thread count until threshold or maxthreads is exceeded and start again with output in csv format (handy for graphing):
 java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 22 --forever --csv
 
 ```
