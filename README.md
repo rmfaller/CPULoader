@@ -17,11 +17,11 @@ available options:
 
 Examples:
 
-Run 2 threads of load until stopped:
-java -jar ./dist/CPULoader.jar --lapsedtime 20000 --maxthreads 2
+Run 2 threads of load for 2000 milliseconds:
+java -jar ./dist/CPULoader.jar --lapsedtime 2000 --maxthreads 2
 
 Increment thread count until threshold is exceeded:
-java -jar ./dist/CPULoader.jar --threshold 5
+java -jar ./dist/CPULoader.jar --threshold 36
 
 Find threshold sweet spot - set maxthreads to known cores and increment threshold until 0% - 10% threads exceed threshold:
 java -jar ./dist/CPULoader.jar  --maxthreads 8 --forever --threshold 38

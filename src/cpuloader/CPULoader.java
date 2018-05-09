@@ -18,7 +18,7 @@ public class CPULoader extends Thread {
     private static long minthreads = 1;
     private static long maxthreads = 1;
     private static int threshold = 0;
-    private static final int defaultthreshold = 5;
+    private static final int defaultthreshold = 32;
     private static boolean baseline = false;
     private static boolean csv = false;
     private static boolean forever = false;
@@ -28,6 +28,8 @@ public class CPULoader extends Thread {
      * @throws java.lang.InterruptedException
      */
     public static void main(String[] args) throws InterruptedException {
+        int cores = Runtime.getRuntime().availableProcessors();
+        maxthreads = (long) cores;
         for (int i = 0; i < args.length; i++) {
             switch (args[i]) {
                 /*                case "-t":
@@ -66,6 +68,7 @@ public class CPULoader extends Thread {
                 case "--forever":
                     forever = true;
                     break;
+                case "-?":
                 case "-h":
                 case "--help":
                     help();
@@ -79,7 +82,6 @@ public class CPULoader extends Thread {
             maxthreads = minthreads + 1;
         }
         if (threads > 0) {
-            int cores = Runtime.getRuntime().availableProcessors();
             Spinner spinner = new Spinner(128);
             if (threshold == 0) {
                 if (forever) {
@@ -179,16 +181,20 @@ public class CPULoader extends Thread {
                 + "\n\t--baseline   | -b {default = " + baseline + "} repeat test while incrementing threads until response time exceeds threshold"
                 + "\n\t--help       | -h this output\n"
                 + "\nExamples:"
-                + "\n\nRun 2 threads of load until stopped:"
-                + "\njava -jar ./dist/CPULoader.jar --lapsedtime 20000 --maxthreads 2"
-                + "\n\nIncrement thread count until threshold is exceeded:"
-                + "\njava -jar ./dist/CPULoader.jar --threshold 5"
-                + "\n\nFind threshold sweet spot - set maxthreads to known cores and increment threshold until 0% - 10% threads exceed threshold:"
-                + "\njava -jar ./dist/CPULoader.jar  --maxthreads 8 --forever --threshold 38"
-                + "\n\nFind CPU consistency - set maxthreads to 2x - 3x known cores and threshold to \"sweet spot\":"
-                + "\njava -jar ./dist/CPULoader.jar  --maxthreads 22 --forever --threshold 38 --baseline"
-                + "\n\nIncrement thread count until threshold is exceeded and start again until stopped with output in csv format:"
-                + "\njava -jar ./dist/CPULoader.jar --threshold 36 --forever --csv --maxhtreads 32 \n";
+                + "\n\nRun load with a set of threads (number of reported cores) until lapsedtime is met:"
+                + "\njava -jar ./dist/CPULoader.jar --lapsedtime 20000"
+                + "\n\nRun 12 threads of load until lapsedtime is met:"
+                + "\njava -jar ./dist/CPULoader.jar --lapsedtime 20000 --maxthreads 12"
+                + "\n\nIncrement thread count up to number of cores reporting how many threads exceeded the threshold:"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 38"
+                + "\n\nIncrement thread count up to maxthreads reporting how many threads exceeded the threshold:"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12"
+                + "\n\nFind threshold sweet spot - set maxthreads slightly larger than known cores and increment threshold until 0% - 10% threads exceed threshold:"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever"
+                + "\n\nFind CPU consistency - set maxthreads to 2x - 3x known cores and threshold to \"sweet spot\" as discovered using the previous example:"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever --baseline"
+                + "\n\nIncrement thread count until threshold or maxthreads is exceeded and start again until stopped with output in csv format (handy for graphing):"
+                + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 22 --forever --csv \n";
         System.out.println(help);
     }
 }
