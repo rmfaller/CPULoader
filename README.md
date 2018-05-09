@@ -3,6 +3,7 @@
 ```
 CPULoader usage:
 java -jar ./dist/CPULoader.jar
+
 available options:
 	--lapsedtime | -l {default = 500} time, in milliseconds the load should run - OR - how long an individual thread should run when threshold is set to 0
 	--minthreads | -m {default = 1} minimum number of threads to spawn

@@ -193,7 +193,7 @@ public class CPULoader extends Thread {
                 + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever"
                 + "\n\nFind CPU consistency - set maxthreads to 2x - 3x known cores and threshold to \"sweet spot\" as discovered using the previous example:"
                 + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever --baseline"
-                + "\n\nIncrement thread count until threshold or maxthreads is exceeded and start again until stopped with output in csv format (handy for graphing):"
+                + "\n\nIncrement thread count until threshold or maxthreads is exceeded and start again with output in csv format (handy for graphing):"
                 + "\njava -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 22 --forever --csv \n";
         System.out.println(help);
     }
