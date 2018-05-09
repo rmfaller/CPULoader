@@ -1,10 +1,8 @@
 # CPULoader
 
 ```
-
 CPULoader usage:
-java -jar ./dist/CPULoader.jar --help
-
+java -jar ./dist/CPULoader.jar
 available options:
 	--lapsedtime | -l {default = 500} time, in milliseconds the load should run - OR - how long an individual thread should run when threshold is set to 0
 	--minthreads | -m {default = 1} minimum number of threads to spawn
@@ -17,19 +15,25 @@ available options:
 
 Examples:
 
-Run 2 threads of load for 2000 milliseconds:
-java -jar ./dist/CPULoader.jar --lapsedtime 2000 --maxthreads 2
+Run load with a set of threads (number of reported cores) until lapsedtime is met:
+java -jar ./dist/CPULoader.jar --lapsedtime 20000
 
-Increment thread count until threshold is exceeded:
-java -jar ./dist/CPULoader.jar --threshold 36
+Run 12 threads of load until lapsedtime is met:
+java -jar ./dist/CPULoader.jar --lapsedtime 20000 --maxthreads 12
 
-Find threshold sweet spot - set maxthreads to known cores and increment threshold until 0% - 10% threads exceed threshold:
-java -jar ./dist/CPULoader.jar  --maxthreads 8 --forever --threshold 38
+Increment thread count up to number of cores reporting how many threads exceeded the threshold:
+java -jar ./dist/CPULoader.jar --threshold 38
 
-Find CPU consistency - set maxthreads to 2x - 3x known cores and threshold to "sweet spot":
-java -jar ./dist/CPULoader.jar  --maxthreads 22 --forever --threshold 38 --baseline
+Increment thread count up to maxthreads reporting how many threads exceeded the threshold:
+java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12
 
-Increment thread count until threshold is exceeded and start again until stopped with output in csv format:
-java -jar ./dist/CPULoader.jar --threshold 36 --forever --csv --maxhtreads 32
+Find threshold sweet spot - set maxthreads slightly larger than known cores and increment threshold until 0% - 10% threads exceed threshold:
+java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever
+
+Find CPU consistency - set maxthreads to 2x - 3x known cores and threshold to "sweet spot" as discovered using the previous example:
+java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 12 --forever --baseline
+
+Increment thread count until threshold or maxthreads is exceeded and start again until stopped with output in csv format (handy for graphing):
+java -jar ./dist/CPULoader.jar --threshold 38 --maxthreads 22 --forever --csv
 
 ```
