@@ -9,6 +9,7 @@ import static java.lang.Math.atan;
 import static java.lang.Math.tan;
 import static java.lang.Thread.yield;
 import java.util.Date;
+import static java.util.stream.IntStream.rangeClosed;
 
 /**
  *
@@ -36,11 +37,12 @@ class Loaders extends Thread {
         long endtask = 0;
         while (((optime <= lapsedtime) || (lapsedtime == 0)) && ((endtask <= this.threshold) || (threshold == 0))) {
             starttask = (long) new Date().getTime();
-            fibber(16);
+//            fibber(16);
+            rooter();
             Math.atan(Math.sqrt(Math.pow(32768, 32768)));
             double d = tan(atan(tan(atan(tan(atan(tan(atan(tan(atan(123456789.123456789))))))))));
-            sleeper((double) 0.8, (long) 32);
-            fibber(16);
+//            sleeper((double) 0.8, (long) 32);
+//            fibber(16);
             long endop = (long) new Date().getTime();
             if (this.threshold != 0) {
                 endtask = (endop - starttask);
@@ -80,5 +82,11 @@ class Loaders extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void rooter() {
+        final int iterations = 100000;
+        rangeClosed(1, 50).parallel()
+                .forEach(i -> rangeClosed(1, iterations).mapToDouble(Math::sqrt).sum());
     }
 }
